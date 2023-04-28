@@ -1,12 +1,28 @@
 {
   "name": "note-taker",
   "version": "1.0.0",
-  "description": "A note-taking application using Express.js",
-  "main": "server.mjs",
+  "description": "A note-taking application built with Node.js and Express",
+  "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "start": "node server.mjs"
+    "start": "node index.mjs"
   },
+  "keywords": [
+    "note",
+    "taking",
+    "express"
+  ],
+  "author": "Your Name",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    {
+      "type": "GPLv3",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
+    }
+  ],
   "dependencies": {
     "express": "^4.17.1",
     "uuid": "^8.3.2"
