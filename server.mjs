@@ -1,7 +1,7 @@
-const express = require("express");
-const path = require("path");
-const fs = require("fs");
-const uuid = require("uuid");
+import express from "express";
+import path from "path";
+import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -24,9 +24,9 @@ app.get("/api/notes", (req, res) => {
 // POST a new note
 app.post("/api/notes", (req, res) => {
   const newNote = {
-    id: uuid.v4(),
+    id: uuidv4(),
     title: req.body.title,
-    text: req.body.text
+    text: req.body.text,
   };
 
   let notes = JSON.parse(fs.readFileSync(path.join(__dirname, "db/db.json"), "utf8"));
