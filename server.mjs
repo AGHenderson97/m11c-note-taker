@@ -1,10 +1,7 @@
 import express from "express";
 import path from "path";
-import { createRequire } from "module";
+import { promises as fs } from "fs";
 
-const require = createRequire(import.meta.url);
-const fs = require("fs");
-import notes from './db/db.json';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -13,36 +10,39 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "/public/index.html"))
+  res.sendFile(path.join(process.cwd(), "/public/index.html"))
 );
 
 app.get("/notes", (req, res) =>
-  res.sendFile(path.join(__dirname, "/public/notes.html"))
+  res.sendFile(path.join(process.cwd(), "/public/notes.html"))
 );
+
+let notes;
+
+(async () => {
+  const rawData = await fs.readFile("./db/db.json", "utf-8");
+  notes = JSON.parse(rawData);
+})();
 
 app.get("/api/notes", (req, res) => {
   res.json(notes);
 });
 
-app.post("/api/notes", (req, res) => {
+app.post("/api/notes", async (req, res) => {
   const newNote = req.body;
   newNote.id = Date.now().toString();
   notes.push(newNote);
-  fs.writeFile("./db/db.json", JSON.stringify(notes), function (err) {
-    if (err) throw err;
-    console.log("Note saved!");
-  });
+  await fs.writeFile("./db/db.json", JSON.stringify(notes));
+  console.log("Note saved!");
   res.json(notes);
 });
 
-app.delete("/api/notes/:id", (req, res) => {
+app.delete("/api/notes/:id", async (req, res) => {
   const noteId = req.params.id;
-  const filteredNotes = notes.filter((note) => note.id !== noteId);
-  fs.writeFile("./db/db.json", JSON.stringify(filteredNotes), function (err) {
-    if (err) throw err;
-    console.log("Note deleted!");
-  });
-  res.json(filteredNotes);
+  notes = notes.filter((note) => note.id !== noteId);
+  await fs.writeFile("./db/db.json", JSON.stringify(notes));
+  console.log("Note deleted!");
+  res.json(notes);
 });
 
 app.listen(PORT, () => {
