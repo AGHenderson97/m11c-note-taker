@@ -22,15 +22,20 @@ app.get("/notes", (req, res) =>
 );
 
 const notesPath = path.resolve(__dirname, './db/db.json');
-let notes = JSON.parse(await fs.readFile(notesPath, 'utf8'));
 
-app.get("/api/notes", (req, res) => {
-  res.json(notes);
+async function readNotes() {
+  const rawData = await fs.readFile(notesPath, 'utf8');
+  return JSON.parse(rawData);
+}
+
+app.get("/api/notes", async (req, res) => {
+  res.json(await readNotes());
 });
 
 app.post("/api/notes", async (req, res) => {
   const newNote = req.body;
   newNote.id = Date.now().toString();
+  const notes = await readNotes();
   notes.push(newNote);
   await fs.writeFile(notesPath, JSON.stringify(notes));
   console.log("Note saved!");
@@ -39,6 +44,7 @@ app.post("/api/notes", async (req, res) => {
 
 app.delete("/api/notes/:id", async (req, res) => {
   const noteId = req.params.id;
+  let notes = await readNotes();
   notes = notes.filter((note) => note.id !== noteId);
   await fs.writeFile(notesPath, JSON.stringify(notes));
   console.log("Note deleted!");
@@ -48,3 +54,4 @@ app.delete("/api/notes/:id", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`App listening on PORT ${PORT}`);
 });
+
