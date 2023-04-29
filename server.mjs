@@ -4,8 +4,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const fs = require("fs");
-const notes = require("./db/db.json");
-
+import notes from './db/db.json';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
