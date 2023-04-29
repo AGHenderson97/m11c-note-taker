@@ -1,3 +1,5 @@
+import { getNotes, saveNote, deleteNote, renderNoteList } from './notes.mjs';
+
 let noteTitle;
 let noteText;
 let saveNoteBtn;
