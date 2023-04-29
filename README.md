@@ -17,7 +17,7 @@ To install the Note Taker application, follow these steps:
 To use the Note Taker application, follow these steps:
 
 1. Navigate to the root directory of the project in your terminal.
-2. Run the command `npm start` to start the application.
+2. Run the command `node --experimental-modules file.mjs` to start the application.
 3. Open your web browser and navigate to `http://localhost:3001`.
 4. Click the "Get Started" button to navigate to the notes page.
 5. Enter a new note title and the note's text in the right-hand column.
