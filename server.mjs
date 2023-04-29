@@ -38,20 +38,15 @@ app.post("/api/notes", async (req, res) => {
   const notes = await readNotes();
   notes.push(newNote);
   await fs.writeFile(notesPath, JSON.stringify(notes));
-  console.log("Note saved!");
-  res.json(notes);
+  res.json(newNote);
 });
 
 app.delete("/api/notes/:id", async (req, res) => {
   const noteId = req.params.id;
-  let notes = await readNotes();
-  notes = notes.filter((note) => note.id !== noteId);
-  await fs.writeFile(notesPath, JSON.stringify(notes));
-  console.log("Note deleted!");
-  res.json(notes);
+  const notes = await readNotes();
+  const updatedNotes = notes.filter((note) => note.id !== noteId);
+  await fs.writeFile(notesPath, JSON.stringify(updatedNotes));
+  res.json({ success: true });
 });
 
-app.listen(PORT, () => {
-  console.log(`App listening on PORT ${PORT}`);
-});
-
+app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
