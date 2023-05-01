@@ -3,12 +3,6 @@
   "version": "1.0.0",
   "description": "A simple note-taking app using Express.js",
   "main": "server.mjs",
-  "scripts": {
-    "start": "node server.mjs",
-    "build": "webpack --mode production",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d public"
-  },
   "keywords": [
     "express",
     "note-taker"
@@ -18,11 +12,19 @@
   "type": "module",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
+    "express": "^4.18.2"
   },
-  "devDependencies": {
-    "gh-pages": "^3.2.3"
+  "engines": {
+    "node": "16.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AGHenderson97/m11c-note-taker.git"
+  },
+  "homepage": "https://AGHenderson97.github.io/m11c-note-taker",
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "npm run build:css",
+    "build:css": "postcss assets/css/styles.css -o public/assets/css/styles.css"
   }
 }
