@@ -1,88 +1,59 @@
-const noteList = document.querySelector('.list-group');
+import express from "express";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+import { promises as fs } from "fs";
 
-// Function to handle the creation of a new note
-const handleNewNote = () => {
-  window.location.href = '/notes';
-};
+const app = express();
+const PORT = process.env.PORT || 5501;
 
-// Function to handle the saving of a note
-const handleNoteSave = async () => {
-  const titleEl = document.querySelector('.note-title');
-  const textEl = document.querySelector('.note-textarea');
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
-  if (titleEl.value === '' || textEl.value === '') {
-    alert('Please enter a title and note text');
-    return;
-  }
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-  const note = {
-    title: titleEl.value,
-    text: textEl.value,
-  };
+app.get("/", (req, res) =>
+  res.sendFile(path.join(__dirname, "/public/index.html"))
+);
 
-  try {
-    const response = await saveNote(note);
-    if (!response.ok) {
-      throw new Error('Something went wrong');
-    }
-    window.location.href = '/notes';
-  } catch (err) {
-    console.error(err);
-    alert('Failed to save note');
-  }
-};
+app.get("/notes", (req, res) =>
+  res.sendFile(path.join(__dirname, "/public/notes.html"))
+);
 
-// Function to handle the deletion of a note
-const handleNoteDelete = async (event) => {
-  event.stopPropagation();
-  const note = event.target.parentNode.dataset.note;
-  const noteObj = JSON.parse(note);
+const notesPath = path.resolve(__dirname, './db/db.json');
 
-  if (confirm(`Are you sure you want to delete "${noteObj.title}"`)) {
-    try {
-      const response = await deleteNote(noteObj.id);
-      if (!response.ok) {
-        throw new Error('Something went wrong');
-      }
-      getNotes().then(renderNoteList);
-    } catch (err) {
-      console.error(err);
-      alert('Failed to delete note');
-    }
-  }
-};
+async function readNotes() {
+  const rawData = await fs.readFile(notesPath, 'utf8');
+  return JSON.parse(rawData);
+}
 
-// Function to handle the viewing of a note
-const handleNoteView = (event) => {
-  event.stopPropagation();
-  const note = event.target.dataset.note;
-  const noteObj = JSON.parse(note);
-  const titleEl = document.querySelector('.note-title');
-  const textEl = document.querySelector('.note-textarea');
+app.get("/api/notes", async (req, res) => {
+  const apiData = await fetch('/api/notes');
+  const data = await apiData.json();
+  res.json(data);
+});
 
-  titleEl.value = noteObj.title;
-  textEl.value = noteObj.text;
-};
+app.post("/api/notes", async (req, res) => {
+  const apiResponse = await fetch('/api/notes', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(req.body)
+  });
 
-// Function to render list of notes
-const loadNotes = async () => {
-  try {
-    const response = await getNotes();
-    if (!response.ok) {
-      throw new Error('Something went wrong');
-    }
-    renderNoteList(response);
-  } catch (err) {
-    console.error(err);
-    alert('Failed to load notes');
-  }
-};
+  const data = await apiResponse.json();
+  res.json(data);
+});
 
-// Attach event listeners
-document.querySelector('.new-note').addEventListener('click', handleNewNote);
-document.querySelector('.save-note').addEventListener('click', handleNoteSave);
-noteList.addEventListener('click', handleNoteView);
-noteList.addEventListener('click', handleNoteDelete);
+app.delete("/api/notes/:id", async (req, res) => {
+  const noteId = req.params.id;
+  const apiResponse = await fetch(`/api/notes/${noteId}`, {
+    method: 'DELETE',
+  });
+  const data = await apiResponse.json();
+  res.json(data);
+});
 
-// Load notes
-loadNotes();
+app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
