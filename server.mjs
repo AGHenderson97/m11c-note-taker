@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import { promises as fs } from "fs";
 
 const app = express();
-const PORT = process.env.PORT || 3001; // Changed port number back to 3001
+const PORT = process.env.PORT || 5501; // Changed port number back to 5501
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
