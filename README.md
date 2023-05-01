@@ -6,7 +6,7 @@ Note Taker is a web application that allows users to write and save notes. The a
 
 ## Installation
 
-To install the Note Taker application, follow these steps:
+To use this app, you'll need to have Node.js and npm installed on your machine. Then, follow these steps:
 
 1. Clone the repository to your local machine.
 2. Navigate to the root directory of the project in your terminal.
@@ -53,12 +53,14 @@ https://aghenderson97.github.io/m11c-note-taker/
 
 
 
-User Story:
+## User Story
+
 AS A small business owner
 I WANT to be able to write and save notes
 SO THAT I can organize my thoughts and keep track of tasks I need to complete
 
-Acceptance Criteria:
+## Acceptance Criteria
+
 GIVEN a note-taking application
 WHEN I open the Note Taker
 THEN I am presented with a landing page with a link to a notes page
